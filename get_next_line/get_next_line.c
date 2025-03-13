@@ -42,93 +42,169 @@
 // 	return (result);
 // }
 
+/*
+** gnl_strjoin - 2つの文字列を結合し、最初の文字列を解放
+** @s1: 最初の文字列（解放される）
+** @s2: 2つ目の文字列
+**
+** 戻り値: 結合された新しい文字列へのポインタ
+*/
 char	*gnl_strjoin(char *s1, char const *s2)
 {
 	char	*result;
-	int		i;
-	int		j;
+	size_t	i;
+	size_t	j;
 
 	if (!s1)
 	{
-		s1 = (char *)malloc(1 * sizeof(char));
+		s1 = (char *)malloc(sizeof(char));
+		if (!s1)
+			return (NULL);
 		s1[0] = '\0';
 	}
 	if (!s1 || !s2)
 		return (NULL);
-	result = (char *)calloc(sizeof(char), ft_strlen(s1) + ft_strlen(s2) + 1);
+	result = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!result)
 		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i] != '\0')
-	{
+	i = -1;
+	while (s1[++i])
 		result[i] = s1[i];
-		i++;
-	}
-	while (s2[j] != '\0')
-	{
-		result[i + j] = s2[j];
-		j++;
-	}
-	result[i + j] = '\0';
+	j = 0;
+	while (s2[j])
+		result[i++] = s2[j++];
+	result[i] = '\0';
 	free(s1);
 	return (result);
 }
 
-char	*get_line(int fd, char *line)
+/*
+** get_line - ファイルから改行が見つかるまで読み込む
+** @fd: ファイルディスクリプタ
+** @left_str: 前回の呼び出しで残った文字列
+**
+** 戻り値: 読み込んだすべての文字列
+*/
+static char	*get_line(int fd, char *left_str)
 {
 	char	*buffer;
 	ssize_t	read_bytes;
 
-	buffer = (char *)malloc(BUFFER_SIZE + 1);
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
 	read_bytes = 1;
-	while (!ft_strchr(line, '\n') && read_bytes > 0)
+	while (read_bytes > 0 && (!left_str || !ft_strchr(left_str, '\n')))
 	{
 		read_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (read_bytes == -1)
 		{
 			free(buffer);
+			if (left_str)
+				free(left_str);
 			return (NULL);
 		}
 		buffer[read_bytes] = '\0';
-		line = gnl_strjoin(line, buffer);
+		left_str = gnl_strjoin(left_str, buffer);
+		if (!left_str)
+		{
+			free(buffer);
+			return (NULL);
+		}
 	}
 	free(buffer);
+	return (left_str);
+}
+
+/*
+** extract_line - バッファから現在の行を抽出
+** @left_str: 処理するバッファ
+**
+** 戻り値: バッファから抽出された1行
+*/
+static char	*extract_line(char *left_str)
+{
+	char	*line;
+	size_t	i;
+
+	if (!left_str || !left_str[0])
+		return (NULL);
+	i = 0;
+	while (left_str[i] && left_str[i] != '\n')
+		i++;
+	if (left_str[i] == '\n')
+		i++;
+	line = (char *)malloc(sizeof(char) * (i + 1));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (left_str[i] && left_str[i] != '\n')
+	{
+		line[i] = left_str[i];
+		i++;
+	}
+	if (left_str[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
 	return (line);
 }
 
-char	*next_line(char *line)
+/*
+** new_left_str - 次の読み込みのために残りの文字列を保存
+** @left_str: 処理するバッファ
+**
+** 戻り値: 現在の行を除いた残りの文字列
+*/
+static char	*new_left_str(char *left_str)
 {
-	int		count;
-	char	*ans;
+	char	*new_str;
+	size_t	i;
+	size_t	j;
 
-	count = 0;
-	while (line[count] != '\n' && line[count] != '\0')
-		count++;
-	ans = ft_substr(line,0,count);
-	ans[count + 1] = 0;
-	return (ans);
+	if (!left_str)
+		return (NULL);
+	i = 0;
+	while (left_str[i] && left_str[i] != '\n')
+		i++;
+	if (left_str[i] == '\0')
+	{
+		free(left_str);
+		return (NULL);
+	}
+	i++;
+	new_str = (char *)malloc(sizeof(char) * (ft_strlen(left_str) - i + 1));
+	if (!new_str)
+	{
+		free(left_str);
+		return (NULL);
+	}
+	j = 0;
+	while (left_str[i])
+		new_str[j++] = left_str[i++];
+	new_str[j] = '\0';
+	free(left_str);
+	return (new_str);
 }
 
-
+/*
+** get_next_line - ファイルから1行ずつ読み込む
+** @fd: 読み込むファイルディスクリプタ
+**
+** 戻り値: 読み込んだ1行の文字列（\nを含む）
+*/
 char	*get_next_line(int fd)
 {
-	static char	*line;
-	char		*result;
+	static char	*left_str;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	result = "";
-	result = get_line(fd,line);
-	printf("::::%s",result);
-	if(!line)
+	left_str = get_line(fd, left_str);
+	if (!left_str)
 		return (NULL);
-	result = next_line(line);
-	printf("::::%s",result);
-	//line = new_line(line);
-	return (result);
+	line = extract_line(left_str);
+	left_str = new_left_str(left_str);
+	return (line);
 }
 
 // #include <string.h>

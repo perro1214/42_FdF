@@ -78,9 +78,12 @@ static t_camera	*ft_camera_init(t_fdf *env)
 		ft_return_error("error initializing camera", 1);
 	camera->zoom = ft_min(WIDTH / env->map->width / 2,
 			HEIGHT / env->map->height / 2);
-	camera->x_angle = -0.615472907;
-	camera->y_angle = -0.523599;
-	camera->z_angle = 0.615472907;
+	// camera->x_angle = -0.615472907;
+	// camera->y_angle = -0.523599;
+	// camera->z_angle = 0.615472907;
+	camera->x_angle = 0;
+	camera->y_angle = 0;
+	camera->z_angle = 0;
 	camera->z_height = 1;
 	camera->x_offset = 0;
 	camera->y_offset = 0;
@@ -98,18 +101,42 @@ static t_camera	*ft_camera_init(t_fdf *env)
 **
 ** 戻り値: プログラムの終了コード
 */
+/* 関数プロトタイプ */
+void	ft_simple_read_map(char *filename, t_map *map);
+void	ft_set_min_max_z(t_map *map);
+
 int	main(int argc, char *argv[])
 {
 	t_fdf	*env;
 
 	if (argc == 2)
 	{
+		printf("DEBUG: Starting fdf with file: %s\n", argv[1]);
+		
+		printf("DEBUG: Initializing environment\n");
 		env = ft_init(argv[1]);
+		
+		printf("DEBUG: Initializing map structure\n");
 		env->map = ft_map_init();
-		ft_check_valid(argv[1], env->map);
+		
+		printf("DEBUG: Loading map data from file\n");
+		ft_simple_read_map(argv[1], env->map);
+		printf("DEBUG: Map loaded - width: %d, height: %d\n", 
+			   env->map->width, env->map->height);
+		
+		printf("DEBUG: Z range: min=%d, max=%d\n", 
+			   env->map->z_min, env->map->z_max);
+			   
+		printf("DEBUG: Initializing camera\n");
 		env->camera = ft_camera_init(env);
+		
+		printf("DEBUG: Setting up event hooks\n");
 		ft_hook_controls(env);
+		
+		printf("DEBUG: Drawing initial view\n");
 		ft_draw(env->map, env);
+		
+		printf("DEBUG: Starting mlx loop\n");
 		mlx_loop(env->mlx);
 	}
 	else
