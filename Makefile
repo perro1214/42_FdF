@@ -1,6 +1,6 @@
 NAME = fdf
 
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
@@ -17,6 +17,7 @@ SRCS = srcs/main.c \
        srcs/parse_map.c \
        srcs/draw.c \
        srcs/controls.c \
+       srcs/color.c \
        srcs/utils.c
 
 # オブジェクトファイル

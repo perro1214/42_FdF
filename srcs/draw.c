@@ -51,6 +51,9 @@ static int	ft_get_sign(int start, int end)
 /*
 ** ft_draw_line - ブレゼンハムアルゴリズムで線を描画
 */
+/*
+** ft_draw_line - ブレゼンハムアルゴリズムで線を描画
+*/
 void	ft_draw_line(t_point p1, t_point p2, t_fdf *env)
 {
 	int	delta_x;
@@ -124,7 +127,7 @@ static void	ft_draw_map(t_map *map, t_fdf *env)
 	t_point	p2;
 	int		zoom;
 
-	zoom = ft_min(WIDTH / map->width / 4, HEIGHT / map->height / 4);
+	zoom = ft_min(WIDTH / map->width / 2, HEIGHT / map->height / 2) * 1;
 	y = 0;
 	while (y < map->height)
 	{
@@ -134,30 +137,50 @@ static void	ft_draw_map(t_map *map, t_fdf *env)
 			p1.x = x * zoom;
 			p1.y = y * zoom;
 			p1.z = map->array[y][x][0] * zoom / 10;
-			p1.color = (map->array[y][x][1] != -1) ? map->array[y][x][1] : 0xFFFFFF;
+			
+			// 色の設定：マップファイルで色が指定されていなければ高さに基づいた色を設定
+			if (map->array[y][x][1] != -1)
+				p1.color = map->array[y][x][1];
+			else
+				p1.color = ft_get_color_by_height(map->array[y][x][0], map->z_min, map->z_max);
+			
 			ft_project(&p1.x, &p1.y, p1.z);
-			p1.x += WIDTH / 4;
-			p1.y += HEIGHT / 3;
+			p1.x += WIDTH / 2;
+			p1.y += HEIGHT / 2;
+			
 			if (x < map->width - 1)
 			{
 				p2.x = (x + 1) * zoom;
 				p2.y = y * zoom;
 				p2.z = map->array[y][x + 1][0] * zoom / 10;
-				p2.color = (map->array[y][x + 1][1] != -1) ? map->array[y][x + 1][1] : 0xFFFFFF;
+				
+				// 色の設定：マップファイルで色が指定されていなければ高さに基づいた色を設定
+				if (map->array[y][x + 1][1] != -1)
+					p2.color = map->array[y][x + 1][1];
+				else
+					p2.color = ft_get_color_by_height(map->array[y][x + 1][0], map->z_min, map->z_max);
+				
 				ft_project(&p2.x, &p2.y, p2.z);
-				p2.x += WIDTH / 4;
-				p2.y += HEIGHT / 3;
+				p2.x += WIDTH / 2;
+				p2.y += HEIGHT / 2;
 				ft_draw_line(p1, p2, env);
 			}
+			
 			if (y < map->height - 1)
 			{
 				p2.x = x * zoom;
 				p2.y = (y + 1) * zoom;
 				p2.z = map->array[y + 1][x][0] * zoom / 10;
-				p2.color = (map->array[y + 1][x][1] != -1) ? map->array[y + 1][x][1] : 0xFFFFFF;
+				
+				// 色の設定：マップファイルで色が指定されていなければ高さに基づいた色を設定
+				if (map->array[y + 1][x][1] != -1)
+					p2.color = map->array[y + 1][x][1];
+				else
+					p2.color = ft_get_color_by_height(map->array[y + 1][x][0], map->z_min, map->z_max);
+				
 				ft_project(&p2.x, &p2.y, p2.z);
-				p2.x += WIDTH / 4;
-				p2.y += HEIGHT / 3;
+				p2.x += WIDTH / 2;
+				p2.y += HEIGHT / 2;
 				ft_draw_line(p1, p2, env);
 			}
 			x++;

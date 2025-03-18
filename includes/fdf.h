@@ -67,6 +67,9 @@ void	ft_draw(t_map *map, t_fdf *env);
 void	ft_draw_line(t_point p1, t_point p2, t_fdf *env);
 void	ft_put_pixel(t_fdf *env, int x, int y, int color);
 
+/* 色関連の関数 */
+int		ft_get_color_by_height(int z, int z_min, int z_max);
+
 /* コントロール関連の関数 */
 int		ft_close(void *param);
 int		ft_key_press(int key, void *param);
