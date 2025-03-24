@@ -38,17 +38,33 @@ void	ft_split_free(char **split)
 	free(split);
 }
 
+static int get_digit_value(char c, int base)
+{
+    int digit;
+
+    if (c >= '0' && c <= '9')
+        digit = c - '0';
+    else if (c >= 'a' && c <= 'f')
+        digit = c - 'a' + 10;
+    else if (c >= 'A' && c <= 'F')
+        digit = c - 'A' + 10;
+    else
+        return (-1); // Invalid digit
+
+    if (digit >= base)
+        return (-1); // Digit out of range for the given base
+    return (digit);
+}
+
 /*
 ** ft_atoi_base - 文字列を指定した基数の整数に変換
 */
 int	ft_atoi_base(char *str, int base)
 {
-	int	result;
-	int	sign;
-	int	digit;
+	int	result = 0;
+	int	sign = 1;
+    int digit;
 
-	result = 0;
-	sign = 1;
 	if (*str == '0' && (*(str + 1) == 'x' || *(str + 1) == 'X'))
 		str += 2;
 	else if (*str == '-')
@@ -58,16 +74,9 @@ int	ft_atoi_base(char *str, int base)
 	}
 	while (*str)
 	{
-		if (*str >= '0' && *str <= '9')
-			digit = *str - '0';
-		else if (*str >= 'a' && *str <= 'f')
-			digit = *str - 'a' + 10;
-		else if (*str >= 'A' && *str <= 'F')
-			digit = *str - 'A' + 10;
-		else
-			break ;
-		if (digit >= base)
-			break ;
+        digit = get_digit_value(*str, base);
+        if (digit == -1)
+            break;
 		result = result * base + digit;
 		str++;
 	}

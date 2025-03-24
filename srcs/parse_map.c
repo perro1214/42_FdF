@@ -44,29 +44,47 @@ static void	ft_set_min_max_z(t_map *map)
 		return ;
 	map->z_min = INT_MAX;
 	map->z_max = INT_MIN;
-	y = 0;
-	while (y < map->height)
+	y = -1;
+	while (++y < map->height)
 	{
-		x = 0;
-		while (x < map->width)
+		x = -1;
+		while (++x < map->width)
 		{
 			if (map->array[y] && map->array[y][x])
 			{
 				z = map->array[y][x][0];
-				if (z < map->z_min)
-					map->z_min = z;
-				if (z > map->z_max)
-					map->z_max = z;
+				map->z_min = (z < map->z_min) ? z : map->z_min;
+				map->z_max = (z > map->z_max) ? z : map->z_max;
 			}
-			x++;
 		}
-		y++;
 	}
 	if (map->z_min == map->z_max)
-	{
-		map->z_min = 0;
-		map->z_max = (map->z_min == 0) ? 1 : map->z_min;
-	}
+		map->z_min = 0, map->z_max = (map->z_min == 0) ? 1 : map->z_min;
+}
+
+
+static int ft_read_first_line(FILE *file, t_map *map, char *line)
+{
+    int i = -1;
+    char **split;
+
+    if (!fgets(line, 1024, file)) {
+        return (0); // Indicate failure
+    }
+    while (line[++i] && line[i] != '\n');
+    line[i] = '\0';
+
+    split = ft_split(line, ' ');
+    if (!split) {
+        return (0); // Indicate failure
+    }
+
+    map->width = 0;
+    while (split[map->width]) {
+        map->width++;
+    }
+    ft_split_free(split);
+    return (1); // Indicate success
 }
 
 /*
@@ -76,8 +94,6 @@ static void	ft_count_map_dimensions(char *filename, t_map *map)
 {
 	FILE	*file;
 	char	line[1024];
-	char	**split;
-	int		i;
 
 	file = fopen(filename, "r");
 	if (!file)
@@ -86,21 +102,17 @@ static void	ft_count_map_dimensions(char *filename, t_map *map)
 	while (fgets(line, sizeof(line), file))
 		map->height++;
 	if (map->height <= 0)
+	{
+		fclose(file); // Close file before returning error.
 		ft_return_error("Empty map file", 0);
+	}
 	rewind(file);
-	if (!fgets(line, sizeof(line), file))
-		ft_return_error("Failed to read first line", 1);
-	i = 0;
-	while (line[i] && line[i] != '\n')
-		i++;
-	line[i] = '\0';
-	split = ft_split(line, ' ');
-	if (!split)
-		ft_return_error("Memory allocation error", 1);
-	map->width = 0;
-	while (split[map->width])
-		map->width++;
-	ft_split_free(split);
+    if(!ft_read_first_line(file, map, line))
+    {
+        fclose(file);
+        ft_return_error("Error processing first line", 1);
+    }
+
 	fclose(file);
 }
 

@@ -55,15 +55,11 @@ void	ft_draw_line(t_point p1, t_point p2, t_fdf *env)
 {
 	int	delta_x;
 	int	delta_y;
-	int	sign_x;
-	int	sign_y;
 	int	error;
 	int	error2;
 
 	ft_calculate_delta(&delta_x, p1.x, p2.x);
 	ft_calculate_delta(&delta_y, p1.y, p2.y);
-	sign_x = ft_get_sign(p1.x, p2.x);
-	sign_y = ft_get_sign(p1.y, p2.y);
 	error = delta_x - delta_y;
 	ft_put_pixel(env, p2.x, p2.y, p2.color);
 	while (p1.x != p2.x || p1.y != p2.y)
@@ -73,12 +69,12 @@ void	ft_draw_line(t_point p1, t_point p2, t_fdf *env)
 		if (error2 > -delta_y)
 		{
 			error -= delta_y;
-			p1.x += sign_x;
+			p1.x += ft_get_sign(p1.x, p2.x);
 		}
 		if (error2 < delta_x)
 		{
 			error += delta_x;
-			p1.y += sign_y;
+			p1.y += ft_get_sign(p1.y, p2.y);
 		}
 	}
 }

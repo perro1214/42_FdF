@@ -24,8 +24,8 @@ void	ft_free_map(t_map *map)
 		return ;
 	if (map->array)
 	{
-		i = 0;
-		while (i < map->height)
+		i = -1;
+		while (++i < map->height)
 		{
 			if (map->array[i])
 			{
@@ -38,7 +38,6 @@ void	ft_free_map(t_map *map)
 				}
 				free(map->array[i]);
 			}
-			i++;
 		}
 		free(map->array);
 	}
