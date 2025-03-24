@@ -13,55 +13,6 @@
 #include "../includes/fdf.h"
 
 /*
-** ft_free_map - マップデータのメモリを解放
-*/
-static void	ft_free_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	if (!map)
-		return ;
-	if (map->array)
-	{
-		i = 0;
-		while (i < map->height)
-		{
-			if (map->array[i])
-			{
-				j = 0;
-				while (j < map->width)
-				{
-					if (map->array[i][j])
-						free(map->array[i][j]);
-					j++;
-				}
-				free(map->array[i]);
-			}
-			i++;
-		}
-		free(map->array);
-	}
-	free(map);
-}
-
-/*
-** ft_free_env - 環境構造体のメモリを解放
-*/
-static void	ft_free_env(t_fdf *env)
-{
-	if (!env)
-		return ;
-	if (env->img)
-		mlx_destroy_image(env->mlx, env->img);
-	if (env->win)
-		mlx_destroy_window(env->mlx, env->win);
-	if (env->map)
-		ft_free_map(env->map);
-	free(env);
-}
-
-/*
 ** ft_close - プログラム終了時の処理
 */
 int	ft_close(void *param)

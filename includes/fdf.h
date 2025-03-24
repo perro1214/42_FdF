@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-17 17:40:00 by perro1214        ###   ########.fr       */
+/*   Created: 2025-03-24 12:03:22 by perro1214         #+#    #+#             */
+/*   Updated: 2025-03-24 12:11:06 by perro1214        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,12 @@ int		ft_get_color_by_height(int z, int z_min, int z_max);
 /* コントロール関連の関数 */
 int		ft_close(void *param);
 int		ft_key_press(int key, void *param);
+int		ft_handle_expose(void *param);
 void	ft_hook_controls(t_fdf *env);
+
+/* メモリ管理関数 */
+void	ft_free_map(t_map *map);
+void	ft_free_env(t_fdf *env);
 
 /* ユーティリティ関数 */
 void	ft_return_error(char *str, int exit_code);

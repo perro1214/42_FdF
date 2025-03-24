@@ -16,7 +16,9 @@ MLX_FLAGS = -lmlx -lX11 -lXext -lm
 SRCS = srcs/main.c \
        srcs/parse_map.c \
        srcs/draw.c \
+       srcs/draw_utils.c \
        srcs/controls.c \
+       srcs/memory.c \
        srcs/color.c \
        srcs/utils.c
 

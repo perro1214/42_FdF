@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-17 17:40:00 by perro1214        ###   ########.fr       */
+/*   Created: 2025-03-24 12:03:22 by perro1214         #+#    #+#             */
+/*   Updated: 2025-03-24 12:03:22 by perro1214        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,14 @@ static void	ft_set_min_max_z(t_map *map)
 }
 
 /*
-** ft_simple_read_map - マップファイル読み込み関数
+** ft_count_map_dimensions - マップの幅と高さを計測する
 */
-void	ft_simple_read_map(char *filename, t_map *map)
+static void	ft_count_map_dimensions(char *filename, t_map *map)
 {
 	FILE	*file;
 	char	line[1024];
-	int		i;
-	int		j;
 	char	**split;
+	int		i;
 
 	file = fopen(filename, "r");
 	if (!file)
@@ -102,24 +101,79 @@ void	ft_simple_read_map(char *filename, t_map *map)
 	while (split[map->width])
 		map->width++;
 	ft_split_free(split);
+	fclose(file);
+}
+
+/*
+** ft_allocate_map_array - マップ配列のメモリを確保
+*/
+static void	ft_allocate_map_array(t_map *map)
+{
+	int	i;
+	int	j;
+
 	map->array = (int ***)malloc(sizeof(int **) * map->height);
 	if (!map->array)
 		ft_return_error("Memory allocation error", 1);
-	for (i = 0; i < map->height; i++)
+	i = 0;
+	while (i < map->height)
 	{
 		map->array[i] = (int **)malloc(sizeof(int *) * map->width);
 		if (!map->array[i])
 			ft_return_error("Memory allocation error", 1);
-		for (j = 0; j < map->width; j++)
+		j = 0;
+		while (j < map->width)
 		{
 			map->array[i][j] = (int *)malloc(sizeof(int) * 2);
 			if (!map->array[i][j])
 				ft_return_error("Memory allocation error", 1);
 			map->array[i][j][0] = 0;
 			map->array[i][j][1] = -1;
+			j++;
 		}
+		i++;
 	}
-	rewind(file);
+}
+
+/*
+** ft_parse_map_line - マップの1行を解析
+*/
+static void	ft_parse_map_line(char *line, int y, t_map *map)
+{
+	char	**split;
+	char	*color_ptr;
+	int		j;
+
+	split = ft_split(line, ' ');
+	if (!split)
+		ft_return_error("Memory allocation error", 1);
+	j = 0;
+	while (j < map->width && split[j])
+	{
+		map->array[y][j][0] = ft_atoi(split[j]);
+		color_ptr = ft_strchr(split[j], ',');
+		if (color_ptr)
+			map->array[y][j][1] = ft_atoi_base(color_ptr + 1, 16);
+		j++;
+	}
+	ft_split_free(split);
+}
+
+/*
+** ft_simple_read_map - マップファイル読み込み関数
+*/
+void	ft_simple_read_map(char *filename, t_map *map)
+{
+	FILE	*file;
+	char	line[1024];
+	int		i;
+	int		j;
+
+	ft_count_map_dimensions(filename, map);
+	ft_allocate_map_array(map);
+	file = fopen(filename, "r");
+	if (!file)
+		ft_return_error("Error opening file", 1);
 	i = 0;
 	while (i < map->height && fgets(line, sizeof(line), file))
 	{
@@ -127,17 +181,7 @@ void	ft_simple_read_map(char *filename, t_map *map)
 		while (line[j] && line[j] != '\n')
 			j++;
 		line[j] = '\0';
-		split = ft_split(line, ' ');
-		if (!split)
-			ft_return_error("Memory allocation error", 1);
-		for (j = 0; j < map->width && split[j]; j++)
-		{
-			map->array[i][j][0] = ft_atoi(split[j]);
-			char *color_ptr = ft_strchr(split[j], ',');
-			if (color_ptr)
-				map->array[i][j][1] = ft_atoi_base(color_ptr + 1, 16);
-		}
-		ft_split_free(split);
+		ft_parse_map_line(line, i, map);
 		i++;
 	}
 	fclose(file);
