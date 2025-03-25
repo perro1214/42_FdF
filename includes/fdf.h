@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-24 12:11:06 by perro1214        ###   ########.fr       */
+/*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
+/*   Updated: 2025/03/25 20:28:03 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,30 +59,30 @@ typedef struct s_fdf
 }	t_fdf;
 
 /* パース関連の関数 */
-void	ft_simple_read_map(char *filename, t_map *map);
+void	ft_read_map(char *filename, t_map *map);
 t_map	*ft_map_init(void);
 
 /* 描画関連の関数 */
 void	ft_draw(t_map *map, t_fdf *env);
-void	ft_draw_line(t_point p1, t_point p2, t_fdf *env);
-void	ft_put_pixel(t_fdf *env, int x, int y, int color);
+void	draw_line(t_point p1, t_point p2, t_fdf *env);
+void	put_pixel(t_fdf *env, int x, int y, int color);
 
 /* 色関連の関数 */
-int		ft_get_color_by_height(int z, int z_min, int z_max);
+int		get_color(int z, int z_min, int z_max);
 
 /* コントロール関連の関数 */
 int		ft_close(void *param);
-int		ft_key_press(int key, void *param);
-int		ft_handle_expose(void *param);
-void	ft_hook_controls(t_fdf *env);
+int		key_press(int key, void *param);
+int		handle_expose(void *param);
+void	hook_controls(t_fdf *env);
 
 /* メモリ管理関数 */
 void	ft_free_map(t_map *map);
 void	ft_free_env(t_fdf *env);
 
 /* ユーティリティ関数 */
-void	ft_return_error(char *str, int exit_code);
-void	ft_split_free(char **split);
+void	err_exit(char *str, int exit_code);
+void	free_split(char **split);
 int		ft_atoi_base(char *str, int base);
 int		ft_max(int a, int b);
 int		ft_min(int a, int b);

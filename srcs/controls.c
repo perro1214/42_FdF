@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controls.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-17 17:40:00 by perro1214        ###   ########.fr       */
+/*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
+/*   Updated: 2025/03/25 20:28:03 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int	ft_close(void *param)
 }
 
 /*
-** ft_key_press - キー入力時の処理
+** key_press - キー入力時の処理
 */
-int	ft_key_press(int key, void *param)
+int	key_press(int key, void *param)
 {
 	t_fdf	*env;
 
@@ -39,9 +39,9 @@ int	ft_key_press(int key, void *param)
 }
 
 /*
-** ft_handle_expose - 再描画イベント時の処理
+** handle_expose - 再描画イベント時の処理
 */
-int	ft_handle_expose(void *param)
+int	handle_expose(void *param)
 {
 	t_fdf	*env;
 
@@ -53,11 +53,11 @@ int	ft_handle_expose(void *param)
 }
 
 /*
-** ft_hook_controls - イベントフックの設定
+** hook_controls - イベントフックの設定
 */
-void	ft_hook_controls(t_fdf *env)
+void	hook_controls(t_fdf *env)
 {
-	mlx_hook(env->win, 2, 0, ft_key_press, env);
+	mlx_hook(env->win, 2, 0, key_press, env);
 	mlx_hook(env->win, 17, 0, ft_close, env);
-	mlx_expose_hook(env->win, ft_handle_expose, env);
+	mlx_expose_hook(env->win, handle_expose, env);
 }

@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-17 17:40:00 by perro1214        ###   ########.fr       */
+/*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
+/*   Updated: 2025/03/25 20:26:21 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
 /*
-** ft_put_pixel - ピクセルを描画
+** put_pixel - ピクセルを描画
 */
-void	ft_put_pixel(t_fdf *env, int x, int y, int color)
+void	put_pixel(t_fdf *env, int x, int y, int color)
 {
 	int	i;
 
@@ -29,9 +29,9 @@ void	ft_put_pixel(t_fdf *env, int x, int y, int color)
 }
 
 /*
-** ft_calculate_delta - 線を描画するための差分を計算
+** calc_delta - 線を描画するための差分を計算
 */
-static void	ft_calculate_delta(int *delta, int start, int end)
+static void	calc_delta(int *delta, int start, int end)
 {
 	*delta = end - start;
 	if (*delta < 0)
@@ -49,22 +49,22 @@ static int	ft_get_sign(int start, int end)
 }
 
 /*
-** ft_draw_line - ブレゼンハムアルゴリズムで線を描画
+** draw_line - ブレゼンハムアルゴリズムで線を描画
 */
-void	ft_draw_line(t_point p1, t_point p2, t_fdf *env)
+void	draw_line(t_point p1, t_point p2, t_fdf *env)
 {
 	int	delta_x;
 	int	delta_y;
 	int	error;
 	int	error2;
 
-	ft_calculate_delta(&delta_x, p1.x, p2.x);
-	ft_calculate_delta(&delta_y, p1.y, p2.y);
+	calc_delta(&delta_x, p1.x, p2.x);
+	calc_delta(&delta_y, p1.y, p2.y);
 	error = delta_x - delta_y;
-	ft_put_pixel(env, p2.x, p2.y, p2.color);
+	put_pixel(env, p2.x, p2.y, p2.color);
 	while (p1.x != p2.x || p1.y != p2.y)
 	{
-		ft_put_pixel(env, p1.x, p1.y, p1.color);
+		put_pixel(env, p1.x, p1.y, p1.color);
 		error2 = error * 2;
 		if (error2 > -delta_y)
 		{

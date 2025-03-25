@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-17 17:40:00 by perro1214        ###   ########.fr       */
+/*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
+/*   Updated: 2025/03/25 20:27:09 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
 /*
-** ft_return_error - エラーメッセージを表示して終了
+** err_exit - エラーメッセージを表示して終了
 */
-void	ft_return_error(char *str, int exit_code)
+void	err_exit(char *str, int exit_code)
 {
 	ft_putendl_fd("Error", 2);
 	ft_putendl_fd(str, 2);
@@ -23,9 +23,9 @@ void	ft_return_error(char *str, int exit_code)
 }
 
 /*
-** ft_split_free - splitで確保された文字列配列を解放
+** free_split - splitで確保された文字列配列を解放
 */
-void	ft_split_free(char **split)
+void	free_split(char **split)
 {
 	int	i;
 
@@ -38,7 +38,7 @@ void	ft_split_free(char **split)
 	free(split);
 }
 
-static int get_digit_value(char c, int base)
+static int get_val(char c, int base)
 {
     int digit;
 
@@ -74,7 +74,7 @@ int	ft_atoi_base(char *str, int base)
 	}
 	while (*str)
 	{
-        digit = get_digit_value(*str, base);
+        digit = get_val(*str, base);
         if (digit == -1)
             break;
 		result = result * base + digit;

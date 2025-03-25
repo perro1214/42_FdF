@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   draw_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: perro1214 <perro1214@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025-03-24 12:03:22 by perro1214        ###   ########.fr       */
+/*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
+/*   Updated: 2025/03/25 20:26:21 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
 /*
-** ft_clear_image - 画像を黒でクリア
+** clear_img - 画像を黒でクリア
 */
-static void	ft_clear_image(t_fdf *env)
+static void	clear_img(t_fdf *env)
 {
 	int	i;
 	int	*img;
@@ -29,9 +29,9 @@ static void	ft_clear_image(t_fdf *env)
 }
 
 /*
-** ft_project - 3D座標から2D座標への変換（等角投影）
+** project - 3D座標から2D座標への変換（等角投影）
 */
-static void	ft_project(int *x, int *y, int z)
+static void	project(int *x, int *y, int z)
 {
 	int	previous_x;
 	int	previous_y;
@@ -43,9 +43,9 @@ static void	ft_project(int *x, int *y, int z)
 }
 
 /*
-** ft_setup_point - 点の座標と色を設定
+** setup_p - 点の座標と色を設定
 */
-static void	ft_setup_point(t_point *p, int x, int y, t_map *map)
+static void	setup_p(t_point *p, int x, int y, t_map *map)
 {
 	int	z;
 	int	zoom;
@@ -59,40 +59,40 @@ static void	ft_setup_point(t_point *p, int x, int y, t_map *map)
 	if (map->array[y][x][1] != -1)
 		p->color = map->array[y][x][1];
 	else
-		p->color = ft_get_color_by_height(z, map->z_min, map->z_max);
+		p->color = get_color(z, map->z_min, map->z_max);
 	
-	ft_project(&p->x, &p->y, p->z);
+	project(&p->x, &p->y, p->z);
 	p->x += WIDTH / 2;
 	p->y += HEIGHT / 3;
 }
 
 /*
-** ft_draw_lines - マップの線を描画
+** draw_lns - マップの線を描画
 */
-static void	ft_draw_lines(t_map *map, t_fdf *env, int x, int y)
+static void	draw_lns(t_map *map, t_fdf *env, int x, int y)
 {
 	t_point	p1;
 	t_point	p2;
 
-	ft_setup_point(&p1, x, y, map);
+	setup_p(&p1, x, y, map);
 	
 	if (x < map->width - 1)
 	{
-		ft_setup_point(&p2, x + 1, y, map);
-		ft_draw_line(p1, p2, env);
+		setup_p(&p2, x + 1, y, map);
+		draw_line(p1, p2, env);
 	}
 	
 	if (y < map->height - 1)
 	{
-		ft_setup_point(&p2, x, y + 1, map);
-		ft_draw_line(p1, p2, env);
+		setup_p(&p2, x, y + 1, map);
+		draw_line(p1, p2, env);
 	}
 }
 
 /*
-** ft_draw_map - マップ全体の描画
+** draw_map - マップ全体の描画
 */
-static void	ft_draw_map(t_map *map, t_fdf *env)
+static void	draw_map(t_map *map, t_fdf *env)
 {
 	int	x;
 	int	y;
@@ -103,7 +103,7 @@ static void	ft_draw_map(t_map *map, t_fdf *env)
 		x = 0;
 		while (x < map->width)
 		{
-			ft_draw_lines(map, env, x, y);
+			draw_lns(map, env, x, y);
 			x++;
 		}
 		y++;
@@ -117,7 +117,7 @@ void	ft_draw(t_map *map, t_fdf *env)
 {
 	if (!map || !env || !env->mlx || !env->win || !env->img)
 		return ;
-	ft_clear_image(env);
-	ft_draw_map(map, env);
+	clear_img(env);
+	draw_map(map, env);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
 }
