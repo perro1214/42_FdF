@@ -6,21 +6,11 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:27:09 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:04:21 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
-
-/*
-** err_exit - エラーメッセージを表示して終了
-*/
-void	err_exit(char *str, int exit_code)
-{
-	ft_putendl_fd("Error", 2);
-	ft_putendl_fd(str, 2);
-	exit(exit_code);
-}
 
 /*
 ** free_split - splitで確保された文字列配列を解放
@@ -38,22 +28,21 @@ void	free_split(char **split)
 	free(split);
 }
 
-static int get_val(char c, int base)
+static	int	get_val(char c, int base)
 {
-    int digit;
+	int	digit;
 
-    if (c >= '0' && c <= '9')
-        digit = c - '0';
-    else if (c >= 'a' && c <= 'f')
-        digit = c - 'a' + 10;
-    else if (c >= 'A' && c <= 'F')
-        digit = c - 'A' + 10;
-    else
-        return (-1); // Invalid digit
-
-    if (digit >= base)
-        return (-1); // Digit out of range for the given base
-    return (digit);
+	if (c >= '0' && c <= '9')
+		digit = c - '0';
+	else if (c >= 'a' && c <= 'f')
+		digit = c - 'a' + 10;
+	else if (c >= 'A' && c <= 'F')
+		digit = c - 'A' + 10;
+	else
+		return (-1);
+	if (digit >= base)
+		return (-1);
+	return (digit);
 }
 
 /*
@@ -61,10 +50,12 @@ static int get_val(char c, int base)
 */
 int	ft_atoi_base(char *str, int base)
 {
-	int	result = 0;
-	int	sign = 1;
-    int digit;
+	int	result;
+	int	sign;
+	int	digit;
 
+	result = 0;
+	sign = 1;
 	if (*str == '0' && (*(str + 1) == 'x' || *(str + 1) == 'X'))
 		str += 2;
 	else if (*str == '-')
@@ -74,9 +65,9 @@ int	ft_atoi_base(char *str, int base)
 	}
 	while (*str)
 	{
-        digit = get_val(*str, base);
-        if (digit == -1)
-            break;
+		digit = get_val(*str, base);
+		if (digit == -1)
+			break ;
 		result = result * base + digit;
 		str++;
 	}

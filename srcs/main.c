@@ -6,7 +6,7 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:28:03 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:04:02 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,16 @@ static t_fdf	*init(const char *path)
 			&env->endian);
 	env->map = NULL;
 	return (env);
+}
+
+/*
+** err_exit - エラーメッセージを表示して終了
+*/
+void	err_exit(char *str, int exit_code)
+{
+	ft_putendl_fd("Error", 2);
+	ft_putendl_fd(str, 2);
+	exit(exit_code);
 }
 
 /*

@@ -6,11 +6,27 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:26:21 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:01:59 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
+
+/*
+** clear_img - 画像を黒でクリア
+*/
+void	ft_clear_img(t_fdf *env)
+{
+	int	i;
+	int	*img;
+	int	max;
+
+	img = (int *)(env->data_addr);
+	max = WIDTH * HEIGHT;
+	i = 0;
+	while (i < max)
+		img[i++] = 0;
+}
 
 /*
 ** put_pixel - ピクセルを描画

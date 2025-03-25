@@ -20,7 +20,8 @@ SRCS = srcs/main.c \
        srcs/controls.c \
        srcs/memory.c \
        srcs/color.c \
-       srcs/utils.c
+       srcs/utils.c \
+	   srcs/parse_map_utils.c
 
 # オブジェクトファイル
 OBJS = $(SRCS:.c=.o)

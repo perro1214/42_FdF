@@ -6,27 +6,11 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:26:21 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:02:42 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
-
-/*
-** clear_img - 画像を黒でクリア
-*/
-static void	clear_img(t_fdf *env)
-{
-	int	i;
-	int	*img;
-	int	max;
-
-	img = (int *)(env->data_addr);
-	max = WIDTH * HEIGHT;
-	i = 0;
-	while (i < max)
-		img[i++] = 0;
-}
 
 /*
 ** project - 3D座標から2D座標への変換（等角投影）
@@ -55,12 +39,10 @@ static void	setup_p(t_point *p, int x, int y, t_map *map)
 	p->y = y * zoom;
 	z = map->array[y][x][0];
 	p->z = z * zoom / 10;
-	
 	if (map->array[y][x][1] != -1)
 		p->color = map->array[y][x][1];
 	else
 		p->color = get_color(z, map->z_min, map->z_max);
-	
 	project(&p->x, &p->y, p->z);
 	p->x += WIDTH / 2;
 	p->y += HEIGHT / 3;
@@ -75,13 +57,11 @@ static void	draw_lns(t_map *map, t_fdf *env, int x, int y)
 	t_point	p2;
 
 	setup_p(&p1, x, y, map);
-	
 	if (x < map->width - 1)
 	{
 		setup_p(&p2, x + 1, y, map);
 		draw_line(p1, p2, env);
 	}
-	
 	if (y < map->height - 1)
 	{
 		setup_p(&p2, x, y + 1, map);
@@ -117,7 +97,7 @@ void	ft_draw(t_map *map, t_fdf *env)
 {
 	if (!map || !env || !env->mlx || !env->win || !env->img)
 		return ;
-	clear_img(env);
+	ft_clear_img(env);
 	draw_map(map, env);
 	mlx_put_image_to_window(env->mlx, env->win, env->img, 0, 0);
 }

@@ -6,7 +6,7 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:28:03 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:07:33 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,11 @@ typedef struct s_fdf
 /* パース関連の関数 */
 void	ft_read_map(char *filename, t_map *map);
 t_map	*ft_map_init(void);
+void	update_row_min_max(t_map *map, int y);
+void	set_min_max(t_map *map);
 
 /* 描画関連の関数 */
+void	ft_clear_img(t_fdf *env);
 void	ft_draw(t_map *map, t_fdf *env);
 void	draw_line(t_point p1, t_point p2, t_fdf *env);
 void	put_pixel(t_fdf *env, int x, int y, int color);

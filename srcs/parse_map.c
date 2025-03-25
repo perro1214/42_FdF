@@ -6,85 +6,32 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:26:53 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/25 21:06:56 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 #include <limits.h>
 
-/*
-** ft_map_init - マップ構造体の初期化
-*/
-t_map	*ft_map_init(void)
+static int	read_first(FILE *file, t_map *map, char *line)
 {
-	t_map	*map;
+	int	i;
+	char	**split;
 
-	map = (t_map *)malloc(sizeof(t_map));
-	if (!map)
-		err_exit("error initializing map", 1);
+	i = -1;
+	if (!fgets(line, 1024, file))
+		return (0);
+	while (line[++i] && line[i] != '\n')
+		;
+	line[i] = '\0';
+	split = ft_split(line, ' ');
+	if (!split)
+		return (0);
 	map->width = 0;
-	map->height = 0;
-	map->array = NULL;
-	map->z_max = 0;
-	map->z_min = 0;
-	return (map);
-}
-
-/*
-** set_min_max - マップ内のZ値の最小値と最大値を設定
-*/
-static void	set_min_max(t_map *map)
-{
-	int	x;
-	int	y;
-	int	z;
-
-	if (!map || !map->array)
-		return ;
-	map->z_min = INT_MAX;
-	map->z_max = INT_MIN;
-	y = -1;
-	while (++y < map->height)
-	{
-		x = -1;
-		while (++x < map->width)
-		{
-			if (map->array[y] && map->array[y][x])
-			{
-				z = map->array[y][x][0];
-				map->z_min = (z < map->z_min) ? z : map->z_min;
-				map->z_max = (z > map->z_max) ? z : map->z_max;
-			}
-		}
-	}
-	if (map->z_min == map->z_max)
-		map->z_min = 0, map->z_max = (map->z_min == 0) ? 1 : map->z_min;
-}
-
-
-static int read_first(FILE *file, t_map *map, char *line)
-{
-    int i = -1;
-    char **split;
-
-    if (!fgets(line, 1024, file)) {
-        return (0); // Indicate failure
-    }
-    while (line[++i] && line[i] != '\n');
-    line[i] = '\0';
-
-    split = ft_split(line, ' ');
-    if (!split) {
-        return (0); // Indicate failure
-    }
-
-    map->width = 0;
-    while (split[map->width]) {
-        map->width++;
-    }
-    free_split(split);
-    return (1); // Indicate success
+	while (split[map->width])
+		map->width++;
+	free_split(split);
+	return (1);
 }
 
 /*
@@ -103,16 +50,15 @@ static void	count_dim(char *filename, t_map *map)
 		map->height++;
 	if (map->height <= 0)
 	{
-		fclose(file); // Close file before returning error.
+		fclose(file);
 		err_exit("Empty map file", 0);
 	}
 	rewind(file);
-    if(!read_first(file, map, line))
-    {
-        fclose(file);
-        err_exit("Error processing first line", 1);
-    }
-
+	if(!read_first(file, map, line))
+	{
+		fclose(file);
+		err_exit("Error processing first line", 1);
+	}
 	fclose(file);
 }
 
