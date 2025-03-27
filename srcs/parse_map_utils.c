@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:05:12 by hhayato@stu       #+#    #+#             */
-/*   Updated: 2025/03/25 21:06:47 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/27 13:41:40 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void	update_row_min_max(t_map *map, int y)
 			z = map->array[y][x][0];
 			if (z < map->z_min)
 			{
-				map->z_min = z; // Update minimum if current z is smaller
+				map->z_min = z;
 			}
 			if (z > map->z_max)
 			{
-				map->z_max = z; // Update maximum if current z is larger
+				map->z_max = z;
 			}
 		}
 	}

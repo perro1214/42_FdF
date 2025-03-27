@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 21:06:56 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/27 13:41:07 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static int	read_first(FILE *file, t_map *map, char *line)
 {
-	int	i;
+	int		i;
 	char	**split;
 
 	i = -1;
@@ -54,7 +54,7 @@ static void	count_dim(char *filename, t_map *map)
 		err_exit("Empty map file", 0);
 	}
 	rewind(file);
-	if(!read_first(file, map, line))
+	if (!read_first(file, map, line))
 	{
 		fclose(file);
 		err_exit("Error processing first line", 1);
