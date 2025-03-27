@@ -6,7 +6,7 @@
 /*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/27 13:41:07 by hhayato          ###   ########.fr       */
+/*   Updated: 2025/03/27 17:17:10 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	read_first(FILE *file, t_map *map, char *line)
 	char	**split;
 
 	i = -1;
-	if (!fgets(line, 1024, file))
+	if (!fgets(line, 65536, file))
 		return (0);
 	while (line[++i] && line[i] != '\n')
 		;
@@ -40,7 +40,7 @@ static int	read_first(FILE *file, t_map *map, char *line)
 static void	count_dim(char *filename, t_map *map)
 {
 	FILE	*file;
-	char	line[1024];
+	char	line[65536];
 
 	file = fopen(filename, "r");
 	if (!file)
@@ -123,7 +123,7 @@ static void	parse_line(char *line, int y, t_map *map)
 void	ft_read_map(char *filename, t_map *map)
 {
 	FILE	*file;
-	char	line[1024];
+	char	line[65536];
 	int		i;
 	int		j;
 
