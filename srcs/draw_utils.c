@@ -6,15 +6,12 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 21:02:42 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/27 19:54:40 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-/*
-** project - 3D座標から2D座標への変換（等角投影）
-*/
 static void	project(int *x, int *y, int z)
 {
 	int	previous_x;
@@ -26,9 +23,6 @@ static void	project(int *x, int *y, int z)
 	*y = (previous_x + previous_y) * sin(0.8) - z;
 }
 
-/*
-** setup_p - 点の座標と色を設定
-*/
 static void	setup_p(t_point *p, int x, int y, t_map *map)
 {
 	int	z;
@@ -48,9 +42,6 @@ static void	setup_p(t_point *p, int x, int y, t_map *map)
 	p->y += HEIGHT / 3;
 }
 
-/*
-** draw_lns - マップの線を描画
-*/
 static void	draw_lns(t_map *map, t_fdf *env, int x, int y)
 {
 	t_point	p1;
@@ -69,9 +60,6 @@ static void	draw_lns(t_map *map, t_fdf *env, int x, int y)
 	}
 }
 
-/*
-** draw_map - マップ全体の描画
-*/
 static void	draw_map(t_map *map, t_fdf *env)
 {
 	int	x;
@@ -90,9 +78,6 @@ static void	draw_map(t_map *map, t_fdf *env)
 	}
 }
 
-/*
-** ft_draw - マップの描画処理
-*/
 void	ft_draw(t_map *map, t_fdf *env)
 {
 	if (!map || !env || !env->mlx || !env->win || !env->img)

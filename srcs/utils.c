@@ -6,15 +6,12 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 21:04:21 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/27 19:56:23 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-/*
-** free_split - splitで確保された文字列配列を解放
-*/
 void	free_split(char **split)
 {
 	int	i;
@@ -45,9 +42,6 @@ static	int	get_val(char c, int base)
 	return (digit);
 }
 
-/*
-** ft_atoi_base - 文字列を指定した基数の整数に変換
-*/
 int	ft_atoi_base(char *str, int base)
 {
 	int	result;
@@ -74,9 +68,6 @@ int	ft_atoi_base(char *str, int base)
 	return (sign * result);
 }
 
-/*
-** ft_max - 2つの整数の最大値を返す
-*/
 int	ft_max(int a, int b)
 {
 	if (a > b)
@@ -84,9 +75,6 @@ int	ft_max(int a, int b)
 	return (b);
 }
 
-/*
-** ft_min - 2つの整数の最小値を返す
-*/
 int	ft_min(int a, int b)
 {
 	if (a < b)

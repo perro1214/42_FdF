@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/27 17:17:10 by hhayato          ###   ########.fr       */
+/*   Updated: 2025/03/27 19:56:04 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ static int	read_first(FILE *file, t_map *map, char *line)
 	return (1);
 }
 
-/*
-** count_dim - マップの幅と高さを計測する
-*/
 static void	count_dim(char *filename, t_map *map)
 {
 	FILE	*file;
@@ -62,9 +59,6 @@ static void	count_dim(char *filename, t_map *map)
 	fclose(file);
 }
 
-/*
-** alloc_arr - マップ配列のメモリを確保
-*/
 static void	alloc_arr(t_map *map)
 {
 	int	i;
@@ -93,9 +87,6 @@ static void	alloc_arr(t_map *map)
 	}
 }
 
-/*
-** parse_line - マップの1行を解析
-*/
 static void	parse_line(char *line, int y, t_map *map)
 {
 	char	**split;
@@ -117,9 +108,6 @@ static void	parse_line(char *line, int y, t_map *map)
 	free_split(split);
 }
 
-/*
-** ft_read_map - マップファイル読み込み関数
-*/
 void	ft_read_map(char *filename, t_map *map)
 {
 	FILE	*file;

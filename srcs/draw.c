@@ -6,15 +6,12 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 21:01:59 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/27 19:55:01 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-/*
-** clear_img - 画像を黒でクリア
-*/
 void	ft_clear_img(t_fdf *env)
 {
 	int	i;
@@ -28,9 +25,6 @@ void	ft_clear_img(t_fdf *env)
 		img[i++] = 0;
 }
 
-/*
-** put_pixel - ピクセルを描画
-*/
 void	put_pixel(t_fdf *env, int x, int y, int color)
 {
 	int	i;
@@ -44,9 +38,6 @@ void	put_pixel(t_fdf *env, int x, int y, int color)
 	}
 }
 
-/*
-** calc_delta - 線を描画するための差分を計算
-*/
 static void	calc_delta(int *delta, int start, int end)
 {
 	*delta = end - start;
@@ -54,9 +45,6 @@ static void	calc_delta(int *delta, int start, int end)
 		*delta = -*delta;
 }
 
-/*
-** ft_get_sign - 増加・減少の方向を決定
-*/
 static int	ft_get_sign(int start, int end)
 {
 	if (start < end)
@@ -64,9 +52,6 @@ static int	ft_get_sign(int start, int end)
 	return (-1);
 }
 
-/*
-** draw_line - ブレゼンハムアルゴリズムで線を描画
-*/
 void	draw_line(t_point p1, t_point p2, t_fdf *env)
 {
 	int	delta_x;
