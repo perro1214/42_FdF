@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
-MLX_PATH = ./minilibx
+MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 MLX_FLAGS = -lmlx -lX11 -lXext -lm
 
