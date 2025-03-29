@@ -4,7 +4,6 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
-# ライブラリへのパス
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
@@ -12,7 +11,6 @@ MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 MLX_FLAGS = -lmlx -lX11 -lXext -lm
 
-# 必須のソースファイル
 SRCS = srcs/main.c \
        srcs/parse_map.c \
        srcs/draw.c \
@@ -23,13 +21,10 @@ SRCS = srcs/main.c \
        srcs/utils.c \
 	   srcs/parse_map_utils.c
 
-# オブジェクトファイル
 OBJS = $(SRCS:.c=.o)
 
-# ヘッダーファイル
 INCLUDES = -I./includes -I$(LIBFT_PATH) -I$(MLX_PATH)
 
-# コンパイルとリンク
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
