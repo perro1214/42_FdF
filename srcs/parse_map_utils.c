@@ -6,16 +6,13 @@
 /*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:05:12 by hhayato@stu       #+#    #+#             */
-/*   Updated: 2025/03/27 13:41:40 by hhayato          ###   ########.fr       */
+/*   Updated: 2025/03/29 16:17:46 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 #include <limits.h>
 
-/*
-** ft_map_init - マップ構造体の初期化
-*/
 t_map	*ft_map_init(void)
 {
 	t_map	*map;
@@ -31,9 +28,6 @@ t_map	*ft_map_init(void)
 	return (map);
 }
 
-/*
-** Updates the minimum and maximum Z values for a given row.
-*/
 void	update_row_min_max(t_map *map, int y)
 {
 	int	x;
@@ -57,9 +51,6 @@ void	update_row_min_max(t_map *map, int y)
 	}
 }
 
-/*
-** Sets the minimum and maximum Z values in the map.
-*/
 void	set_min_max(t_map *map)
 {
 	int	y;

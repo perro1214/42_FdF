@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 21:04:02 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/29 16:17:29 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-/*
-** init - 描画環境の初期化
-*/
 static t_fdf	*init(const char *path)
 {
 	t_fdf	*env;
@@ -40,9 +37,6 @@ static t_fdf	*init(const char *path)
 	return (env);
 }
 
-/*
-** err_exit - エラーメッセージを表示して終了
-*/
 void	err_exit(char *str, int exit_code)
 {
 	ft_putendl_fd("Error", 2);
@@ -50,9 +44,6 @@ void	err_exit(char *str, int exit_code)
 	exit(exit_code);
 }
 
-/*
-** main - プログラムのエントリポイント
-*/
 int	main(int argc, char *argv[])
 {
 	t_fdf	*env;
