@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controls.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 17:40:00 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/25 20:57:41 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/29 16:37:36 by hhayato          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	handle_expose(void *param)
 
 void	hook_controls(t_fdf *env)
 {
-	mlx_hook(env->win, 2, 0, key_press, env);
+	mlx_hook(env->win, 2, (1L << 0), key_press, env);
 	mlx_hook(env->win, 17, 0, ft_close, env);
 	mlx_expose_hook(env->win, handle_expose, env);
 }
