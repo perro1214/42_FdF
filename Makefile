@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
-GET_NEXT_LINE_PATH = ./get_next_line/
+GET_NEXT_LINE_PATH = ./get_next_line
 GET_NEXT_LINE = $(GET_NEXT_LINE_PATH)/get_next_line.a
 
 MLX_PATH = ./minilibx-linux
@@ -24,7 +24,8 @@ SRCS = srcs/main.c \
        srcs/memory.c \
        srcs/color.c \
        srcs/utils.c \
-	   srcs/parse_map_utils.c
+	   srcs/parse_map_utils.c \
+	   srcs/parse_map_setup.c
 
 # オブジェクトファイル
 OBJS = $(SRCS:.c=.o)
@@ -35,14 +36,17 @@ INCLUDES = -I./includes -I$(LIBFT_PATH) -I$(MLX_PATH) -I$(GET_NEXT_LINE_PATH)
 # コンパイルとリンク
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_PATH) -lft -L$(MLX_PATH) $(MLX_FLAGS)
+$(NAME): $(LIBFT) $(GET_NEXT_LINE) $(MLX) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_PATH) -lft -L$(GET_NEXT_LINE_PATH) -lgnl -L$(MLX_PATH) $(MLX_FLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
 	make -C $(LIBFT_PATH)
+
+$(GET_NEXT_LINE):
+	make -C $(GET_NEXT_LINE_PATH)
 
 $(MLX):
 	make -C $(MLX_PATH)
@@ -51,10 +55,12 @@ clean:
 	$(RM) $(OBJS)
 	make -C $(LIBFT_PATH) clean
 	make -C $(MLX_PATH) clean
+	make -C $(GET_NEXT_LINE_PATH) clean
 
 fclean: clean
 	$(RM) $(NAME)
 	make -C $(LIBFT_PATH) fclean
+	make -C $(GET_NEXT_LINE_PATH) fclean
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:03:22 by perro1214         #+#    #+#             */
-/*   Updated: 2025/03/27 19:53:58 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/30 12:55:03 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FDF_H
 
 # include "libft.h"
+# include "get_next_line.h"
 # include "mlx.h"
 # include <math.h>
 # include <fcntl.h>
@@ -59,6 +60,8 @@ void	ft_read_map(char *filename, t_map *map);
 t_map	*ft_map_init(void);
 void	update_row_min_max(t_map *map, int y);
 void	set_min_max(t_map *map);
+int	check_map_dimensions(char *filename, t_map *map);
+void	allocate_map_array(t_map *map);
 
 void	ft_clear_img(t_fdf *env);
 void	ft_draw(t_map *map, t_fdf *env);

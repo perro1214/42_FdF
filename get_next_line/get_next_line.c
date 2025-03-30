@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:48:23 by hhayato           #+#    #+#             */
-/*   Updated: 2025/01/07 14:16:32 by hhayato          ###   ########.fr       */
+/*   Updated: 2025/03/30 12:12:52 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	*ft_calloc(size_t n, size_t size)
 	return (result);
 }
 
-char	*ft_strjoin(char *s1, char const *s2)
+static char	*ft_strjoin(char *s1, char const *s2)
 {
 	char	*result;
 	int		i;
