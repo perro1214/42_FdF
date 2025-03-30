@@ -8,6 +8,9 @@ RM = rm -f
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 
+GET_NEXT_LINE_PATH = ./get_next_line/
+GET_NEXT_LINE = $(GET_NEXT_LINE_PATH)/get_next_line.a
+
 MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 MLX_FLAGS = -lmlx -lX11 -lXext -lm
@@ -27,7 +30,7 @@ SRCS = srcs/main.c \
 OBJS = $(SRCS:.c=.o)
 
 # ヘッダーファイル
-INCLUDES = -I./includes -I$(LIBFT_PATH) -I$(MLX_PATH)
+INCLUDES = -I./includes -I$(LIBFT_PATH) -I$(MLX_PATH) -I$(GET_NEXT_LINE_PATH)
 
 # コンパイルとリンク
 all: $(NAME)
