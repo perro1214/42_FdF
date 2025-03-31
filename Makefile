@@ -1,67 +1,87 @@
+# Program Name
 NAME = fdf
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-RM = rm -f
+# Compiler and Flags
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g
+# CFLAGS += -g # Optional: for debugging with valgrind/lldb/gdb
 
-# ライブラリへのパス
-LIBFT_PATH = ./libft
-LIBFT = $(LIBFT_PATH)/libft.a
+# Directories
+SRC_DIR = src
+OBJ_DIR = obj
+INC_DIR = include
+LIBFT_DIR = libft
+GNL_DIR = get_next_line
+MLX_DIR = mlx # Adjust if your mlx location is different
 
-GET_NEXT_LINE_PATH = ./get_next_line
-GET_NEXT_LINE = $(GET_NEXT_LINE_PATH)/get_next_line.a
+# Libft
+LIBFT = $(LIBFT_DIR)/libft.a
+GNL_LIB = $(GNL_DIR)/libgnl.a
+MLX_LIB = $(MLX_DIR)/libmlx.a
 
-MLX_PATH = ./minilibx-linux
-MLX = $(MLX_PATH)/libmlx.a
-MLX_FLAGS = -lmlx -lX11 -lXext -lm
+# MiniLibX Flags (macOS Example - MODIFY FOR YOUR SYSTEM)
+# Check the MiniLibX documentation/Makefile for your OS!
+MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lbsd # macOS
+# MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lbsd # Linux Example (check!)
 
-# 必須のソースファイル
-SRCS = srcs/main.c \
-       srcs/parse_map.c \
-       srcs/draw.c \
-       srcs/draw_utils.c \
-       srcs/controls.c \
-       srcs/memory.c \
-       srcs/color.c \
-       srcs/utils.c \
-	   srcs/parse_map_utils.c \
-	   srcs/parse_map_setup.c
+# Math Library
+LDFLAGS = -lm $(MLXFLAGS) # Link math library (-lm) and MiniLibX
 
-# オブジェクトファイル
-OBJS = $(SRCS:.c=.o)
+# Source Files
+SRCS_FILES = main.c parse.c init.c draw.c hooks.c utils.c
+SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 
-# ヘッダーファイル
-INCLUDES = -I./includes -I$(LIBFT_PATH) -I$(MLX_PATH) -I$(GET_NEXT_LINE_PATH)
+# Object Files
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
-# コンパイルとリンク
+# Include Paths
+INC = -I$(INC_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR) -I$(GNL_DIR) # Include mlx dir
+
+# Rules
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(GET_NEXT_LINE) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_PATH) -lft -L$(GET_NEXT_LINE_PATH) -lgnl -L$(MLX_PATH) $(MLX_FLAGS)
+$(NAME): $(OBJS) $(LIBFT) $(GNL_LIB) $(MLX_LIB)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(GNL_LIB) $(LDFLAGS) -o $(NAME)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 $(LIBFT):
-	make -C $(LIBFT_PATH)
+	$(MAKE) -C $(LIBFT_DIR)
 
-$(GET_NEXT_LINE):
-	make -C $(GET_NEXT_LINE_PATH)
+$(GNL_LIB):
+	$(MAKE) -C $(GNL_DIR)
 
-$(MLX):
-	make -C $(MLX_PATH)
+$(MLX_LIB):
+	$(MAKE) -C $(MLX_DIR)
+
+
+
+# Phony Rules
+.PHONY: all clean fclean re libft norm bonus
 
 clean:
-	$(RM) $(OBJS)
-	make -C $(LIBFT_PATH) clean
-	make -C $(MLX_PATH) clean
-	make -C $(GET_NEXT_LINE_PATH) clean
+	$(MAKE) -C $(LIBFT_DIR) clean
+	$(MAKE) -C $(GNL_DIR) clean
+	$(MAKE) -C $(MLX_DIR) clean
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
-	$(RM) $(NAME)
-	make -C $(LIBFT_PATH) fclean
-	make -C $(GET_NEXT_LINE_PATH) fclean
+	$(MAKE) -C $(LIBFT_DIR) fclean
+	$(MAKE) -C $(GNL_DIR) fclean
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+libft:
+	$(MAKE) -C $(LIBFT_DIR) all
+
+norm:
+	norminette $(SRC_DIR) $(INC_DIR) $(LIBFT_DIR) # Check norm for src, include, libft
+
+# Optional Bonus Rule (as per subject, even if not implemented now)
+bonus: # Define bonus sources/objects if you were doing them
+	# Example: $(MAKE) WITH_BONUS=1 all

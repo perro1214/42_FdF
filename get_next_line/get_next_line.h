@@ -3,29 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 15:54:36 by hhayato           #+#    #+#             */
-/*   Updated: 2025/01/05 13:46:24 by hhayato          ###   ########.fr       */
+/*   Updated: 2025/03/30 22:54:08 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <stdlib.h>
 # include <unistd.h>
-
-void	*ft_memcpy(void *dst, const void *src, size_t len);
-size_t	ft_strlen(const char *str);
-char	*ft_strdup(const char *s);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*get_next_line(int fd);
-void	*ft_calloc(size_t n, size_t size);
+# include <stdlib.h>
+# include <stdio.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
+#  define BUFFER_SIZE 8192
 # endif
+
+# if BUFFER_SIZE < 0
+#  undef BUFFER_SIZE
+#  define BUFFER_SIZE 0
+# endif
+
+size_t	gnl_strlen(const char *s);
+char	*gnl_strchr(const char *str, int c);
+char	*gnl_strjoin(char *buffer, char *s);
+char	*gnl_substr(char const *s, unsigned int start, size_t len);
+int		gnl_endl(char *str);
+char	*gnl_get_line(char *buffer);
+char	*gnl_new_str(char *buffer);
+char	*gnl_read_str(int fd, char *buffer);
+char	*get_next_line(int fd);
 
 #endif

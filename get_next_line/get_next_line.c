@@ -6,140 +6,98 @@
 /*   By: hhayato@student.42.fr <hhayato>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:48:23 by hhayato           #+#    #+#             */
-/*   Updated: 2025/03/30 12:12:52 by hhayato@stu      ###   ########.fr       */
+/*   Updated: 2025/03/30 22:41:03 by hhayato@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <limits.h>
 #include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
 
-void	*ft_calloc(size_t n, size_t size)
+char	*gnl_get_line(char *buffer)
 {
-	void	*result;
-	char	*c_r;
-	size_t	i;
+	int		i;
+	char	*str;
 
-	if (n == 0 || size == 0)
+	i = 0;
+	if (!buffer[i])
+		return (NULL);
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	str = gnl_substr(buffer, 0, i + gnl_endl(buffer));
+	if (!str)
 	{
-		result = malloc(0);
-		return (result);
-	}
-	if (((__SIZE_MAX__ / n) < size))
-	{
+		free(str);
 		return (NULL);
 	}
-	result = malloc(n * size);
-	if (!result)
-		return (NULL);
-	i = (size_t)0;
-	c_r = result;
-	while (i < size)
-	{
-		c_r[i++] = 0;
-	}
-	return (result);
+	return (str);
 }
 
-static char	*ft_strjoin(char *s1, char const *s2)
+char	*gnl_new_str(char *buffer)
 {
-	char	*result;
 	int		i;
 	int		j;
+	char	*str;
 
-	if (!s1 || !s2)
-		return (NULL);
-	result = (char *)ft_calloc(sizeof(char), ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!result)
-		return (NULL);
 	i = 0;
-	j = 0;
-	while (s1[i] != '\0')
-	{
-		result[i] = s1[i];
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	}
-	while (s2[j] != '\0')
+	if (!buffer[i])
 	{
-		result[i + j] = s2[j];
-		j++;
+		free(buffer);
+		return (NULL);
 	}
-	result[i + j] = '\0';
-	free(s1);
-	return (result);
+	str = malloc(sizeof(char) * (gnl_strlen(buffer) - i + 1));
+	if (!str)
+	{
+		free(str);
+		return (NULL);
+	}
+	i++;
+	j = 0;
+	while (buffer[i])
+		str[j++] = buffer[i++];
+	str[j] = '\0';
+	free(buffer);
+	return (str);
 }
 
-char	*open_codes(int fd, char *backup, char *buffer)
+char	*gnl_read_str(int fd, char *buffer)
 {
-	int	bytes_read;
-	int	i;
+	char	*s;
+	int		bytes;
 
-	bytes_read = 1;
-	i = 0;
-	while (1)
+	s = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!s)
+		return (NULL);
+	bytes = 1;
+	while (!gnl_strchr(buffer, '\n') && bytes != 0)
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-			return (0);
-		else if (bytes_read == 0)
-			break ;
-		if (backup == NULL)
-			backup = ft_strdup("");
-		buffer[bytes_read] = '\0';
-		backup = ft_strjoin(backup, buffer);
-		if (!backup)
+		bytes = read(fd, s, BUFFER_SIZE);
+		if (bytes < 0)
+		{
+			free(s);
 			return (NULL);
-		i = 0;
-		while (buffer[i] != '\0' && buffer[i] != '\n')
-			i++;
-		if (buffer[i] == '\n')
-			break ;
+		}
+		s[bytes] = '\0';
+		buffer = gnl_strjoin(buffer, s);
 	}
-	return (backup);
-}
-
-static char	*cat_open(char *result)
-{
-	int		count;
-	char	*backup;
-
-	count = 0;
-	while (result[count] != '\n' && result[count] != '\0')
-		count++;
-	if (result[count] == '\0' || result[1] == '\0')
-		return (0);
-	backup = ft_substr(result, count + 1, ft_strlen(result) - count);
-	if (*backup == '\0')
-	{
-		free(backup);
-		backup = NULL;
-	}
-	result[count + 1] = 0;
-	return (backup);
+	free(s);
+	return (buffer);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*backup;
-	char		*result;
-	char		*buffer;
+	char		*line;
+	static char	*buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	buffer = (char *)ft_calloc(sizeof(char), (BUFFER_SIZE + 1));
+		return (0);
+	buffer = gnl_read_str(fd, buffer);
 	if (!buffer)
 		return (NULL);
-	result = "";
-	result = open_codes(fd, backup, buffer);
-	free(buffer);
-	if (!result)
-	{
-		free(backup);
-		return (NULL);
-	}
-	backup = cat_open(result);
-	return (result);
+	line = gnl_get_line(buffer);
+	buffer = gnl_new_str(buffer);
+	return (line);
 }
 
 // #include <string.h>
