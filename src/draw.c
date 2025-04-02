@@ -1,104 +1,94 @@
 #include "fdf.h"
+#include <math.h>
 
-/* @brief Puts a pixel onto the image buffer respecting boundaries */
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
 	char	*dst;
 
-	// Check bounds before writing
 	if (x >= 0 && x < WIN_WIDTH && y >= 0 && y < WIN_HEIGHT)
 	{
 		dst = img->addr + (y * img->line_len + x * (img->bpp / 8));
-		*(unsigned int *)dst = color; // Cast to unsigned int* for direct color write
+		*(unsigned int *)dst = color;
 	}
 }
 
-/* @brief Helper function for Bresenham's algorithm setup */
-static void	init_bresenham(t_point p0, t_point p1, int *dx, int *dy, int *sx, int *sy)
+void	clear_image(t_img *img)
 {
-	*dx = abs((int)p1.x - (int)p0.x);
-	*dy = -abs((int)p1.y - (int)p0.y);
-	*sx = (p0.x < p1.x) ? 1 : -1;
-	*sy = (p0.y < p1.y) ? 1 : -1;
+	if (img && img->addr)
+	{
+		ft_memset(img->addr, 0, WIN_WIDTH * WIN_HEIGHT * (img->bpp / 8));
+	}
 }
 
-/* @brief Bresenham's line drawing algorithm */
 void	draw_line(t_point p0, t_point p1, t_fdf *fdf)
 {
-	int dx;
-	int dy;
-	int sx;
-	int sy;
-	int err;
-	int e2;
-	int current_x;
-	int current_y;
+	t_bresenham	bres;
+	int			color;
 
-	// Optional: Interpolate color along the line (simple version: use p0's color)
-	int color = (p0.color != -1) ? p0.color : get_default_color(p0.z, fdf);
-
-	init_bresenham(p0, p1, &dx, &dy, &sx, &sy);
-	err = dx + dy;
-	current_x = (int)p0.x;
-	current_y = (int)p0.y;
+	init_bresenham_params(&bres, p0, p1);
+	if (p0.color != -1)
+		color = p0.color;
+	else
+		color = get_default_color(p0.z, fdf);
 	while (1)
 	{
-		my_mlx_pixel_put(&fdf->img, current_x, current_y, color);
-		if (current_x == (int)p1.x && current_y == (int)p1.y)
+		my_mlx_pixel_put(&fdf->img, bres.cur_x, bres.cur_y, color);
+		if (bres.cur_x == (int)p1.x && bres.cur_y == (int)p1.y)
 			break ;
-		e2 = 2 * err;
-		if (e2 >= dy)
+		bres.err2 = 2 * bres.err;
+		if (bres.err2 >= bres.dy)
 		{
-			err += dy;
-			current_x += sx;
+			bres.err += bres.dy;
+			bres.cur_x += bres.sx;
 		}
-		if (e2 <= dx)
+		if (bres.err2 <= bres.dx)
 		{
-			err += dx;
-			current_y += sy;
+			bres.err += bres.dx;
+			bres.cur_y += bres.sy;
 		}
 	}
 }
 
-/* @brief Renders the entire wireframe model */
+static void	render_point_connections(int x, int y, t_fdf *fdf)
+{
+	t_point	current_3d;
+	t_point	p0;
+	t_point	p_right;
+	t_point	p_down;
+	t_point	_3d;
+
+	current_3d = (t_point){(float)x, (float)y, (float)fdf->z_grid[y][x],
+		fdf->color_grid[y][x]};
+	p0 = project(current_3d, fdf);
+	if (x < fdf->map_width - 1)
+	{
+		_3d = (t_point){(float)(x + 1), (float)y, (float)fdf->z_grid[y][x + 1],
+			fdf->color_grid[y][x + 1]};
+		p_right = project(_3d, fdf);
+		draw_line(p0, p_right, fdf);
+	}
+	if (y < fdf->map_height - 1)
+	{
+		_3d = (t_point){(float)x, (float)(y + 1), (float)fdf->z_grid[y + 1][x],
+			fdf->color_grid[y + 1][x]};
+		p_down = project(_3d, fdf);
+		draw_line(p0, p_down, fdf);
+	}
+}
+
 void	render(t_fdf *fdf)
 {
-	int		x;
-	int		y;
-	t_point	current_3d;
-	t_point	p0; // Projected current point
-	t_point	p_right; // Projected point to the right
-	t_point	p_down; // Projected point below
+	int	x;
+	int	y;
 
-	// Clear image (optional, set to black or another background color)
-	// memset(fdf->img.addr, 0, WIN_WIDTH * WIN_HEIGHT * (fdf->img.bpp / 8));
-
+	clear_image(&fdf->img);
 	y = 0;
 	while (y < fdf->map_height)
 	{
 		x = 0;
 		while (x < fdf->map_width)
 		{
-			current_3d = (t_point){(float)x, (float)y, (float)fdf->z_grid[y][x],
-									 fdf->color_grid[y][x]}; // Use stored color
-			p0 = project(current_3d, fdf); // Project current point
-
-			// Draw line to the right neighbor
-			if (x < fdf->map_width - 1)
-			{
-				t_point right_3d = {(float)(x + 1), (float)y, (float)fdf->z_grid[y][x + 1],
-				                    fdf->color_grid[y][x+1]};
-				p_right = project(right_3d, fdf);
-				draw_line(p0, p_right, fdf);
-			}
-			// Draw line to the bottom neighbor
-			if (y < fdf->map_height - 1)
-			{
-                 t_point down_3d = {(float)x, (float)(y + 1), (float)fdf->z_grid[y + 1][x],
-                                    fdf->color_grid[y+1][x]};
-				p_down = project(down_3d, fdf);
-				draw_line(p0, p_down, fdf);
-			}
+			render_point_connections(x, y, fdf);
 			x++;
 		}
 		y++;

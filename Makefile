@@ -28,7 +28,7 @@ MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lbsd # macOS
 LDFLAGS = -lm $(MLXFLAGS) # Link math library (-lm) and MiniLibX
 
 # Source Files
-SRCS_FILES = main.c parse.c init.c draw.c hooks.c utils.c
+SRCS_FILES = main.c parse.c parse_utils.c init.c draw.c hooks.c utils.c cleanup.c utils2.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 
 # Object Files

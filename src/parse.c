@@ -1,149 +1,86 @@
 #include "fdf.h"
 
-/* @brief Gets the width of the map from a line (count numbers) */
-int	get_map_width(char *line)
+static void	close_terminal(int fd, char *line)
 {
-	int		width;
-	char	**numbers;
-
-	numbers = ft_split(line, ' ');
-	if (!numbers)
-		terminate("Error: ft_split failed in get_map_width");
-	width = 0;
-	while (numbers[width] && numbers[width][0] != '\n') // Stop at newline if present
-		width++;
-	free_split(numbers); // Use a libft helper or loop to free
-	return (width);
+	close(fd);
+	terminate(line);
 }
 
-/* @brief Counts the number of lines (height) in the file */
-int count_lines(const char *filename)
+static void	free_close_terminal(int fd, char *error, char *line)
 {
-    int     fd;
-    int     height;
-    char    *line; // read_bytes は不要
-
-    fd = open(filename, O_RDONLY);
-    if (fd < 0)
-        terminate("Error: Failed to open map file");
-    height = 0;
-    line = get_next_line(fd); // 最初の行を読む
-    while (line != NULL) // 戻り値が NULL でなければ読み込み成功 (EOF含む場合あり)
-    {
-        height++;
-        free(line); // 読み込んだ行のメモリを解放
-        line = get_next_line(fd); // 次の行を読む
-    }
-    close(fd);
-    if (height == 0 && line)
-        free(line);
-    return (height);
+	free(line);
+	close(fd);
+	terminate(error);
 }
 
-/* @brief Allocates memory for the z_grid and color_grid */
-static void allocate_grids(t_fdf *fdf)
+static int	process_map_lines(t_fdf *fdf, int fd, char *line, int y)
 {
-	int i;
-
-	fdf->z_grid = (int **)malloc(sizeof(int *) * fdf->map_height);
-	if (!fdf->z_grid)
-		terminate("Error: Malloc failed for z_grid rows");
-	fdf->color_grid = (int **)malloc(sizeof(int *) * fdf->map_height);
-	if (!fdf->color_grid)
+	while (y < fdf->map_height && line)
 	{
-		free(fdf->z_grid);
-		terminate("Error: Malloc failed for color_grid rows");
-	}
-	i = 0;
-	while (i < fdf->map_height)
-	{
-		fdf->z_grid[i] = (int *)malloc(sizeof(int) * fdf->map_width);
-		fdf->color_grid[i] = (int *)malloc(sizeof(int) * fdf->map_width);
-		if (!fdf->z_grid[i] || !fdf->color_grid[i])
+		if (line[0] == '\n' || line[0] == '\0')
 		{
-			// Proper cleanup needed here if allocation fails mid-way
-			while (--i >= 0) { free(fdf->z_grid[i]); free(fdf->color_grid[i]); }
-			free(fdf->z_grid); free(fdf->color_grid);
-			terminate("Error: Malloc failed for grid columns");
+			free(line);
+			line = get_next_line(fd);
+			continue ;
 		}
-		i++;
-	}
-}
-
-/* @brief Fills a row of the grid with z and color values */
-static void	fill_grid_row(int y, char *line, t_fdf *fdf)
-{
-	char	**values;
-	char	*color_str;
-	int		x;
-
-	values = ft_split(line, ' ');
-	if (!values)
-		terminate("Error: ft_split failed while filling grid");
-	x = 0;
-	while (x < fdf->map_width)
-	{
-		if (!values[x]) // Check if line is shorter than expected width
+		if (fill_grid_row(y, line, fdf) != 0)
 		{
-			free_split(values);
-			terminate("Error: Map line has inconsistent width");
+			cleanup(fdf);
+			free_close_terminal(fd, "Error: Inconsistent map width found",
+				line);
 		}
-		fdf->z_grid[y][x] = ft_atoi(values[x]);
-		color_str = ft_strchr(values[x], ',');
-		if (color_str)
-			fdf->color_grid[y][x] = ft_atoi_hex(color_str + 1); // Use helper
+		free(line);
+		y++;
+		if (y < fdf->map_height)
+			line = get_next_line(fd);
 		else
-			fdf->color_grid[y][x] = -1; // Indicate no color specified
-		x++;
+			line = NULL;
 	}
-	// Optional: Check if there are more values than expected width
-	if (values[x] && values[x][0] != '\n')
-	{
-		free_split(values);
-		terminate("Error: Map line has inconsistent width (too long)");
-	}
-	free_split(values);
+	if (line)
+		free(line);
+	return (y);
 }
 
-
-/* @brief Parses the map file into the fdf data structure */
-void parse_map(const char *filename, t_fdf *fdf)
+static void	parse_map1(t_fdf *fdf, int fd, char *line)
 {
-    int     fd;
-    char    *line;
-    int     y;
-    // int     gnl_ret; // 不要
+	int	processed_lines;
 
-    fdf->map_height = count_lines(filename);
-    if (fdf->map_height <= 0)
-        terminate("Error: Map file is empty or could not be read");
-    fd = open(filename, O_RDONLY);
-    if (fd < 0)
-        terminate("Error: Failed to open map file for parsing");
-    line = get_next_line(fd); // 最初の行を読む
-    if (!line) // 最初の行が読めない（空ファイルなど）
-    {
-        close(fd);
-        terminate("Error: Failed to read first line or empty map");
-    }
-    fdf->map_width = get_map_width(line); // 最初の行から幅を取得
-    if (fdf->map_width <= 0)
-        terminate("Error: Invalid map width");
-    allocate_grids(fdf);
-    y = 0;
-    while (line != NULL && y < fdf->map_height) // line が NULL になるまでループ
-    {
-        fill_grid_row(y, line, fdf);
-        free(line); // 行を処理したら解放
-        y++;
-        if (y < fdf->map_height) // 無駄な読み込みを防ぐ
-            line = get_next_line(fd); // 次の行を読む
-        else
-            line = NULL; // ループを抜けるために NULL を設定
-    }
-     if (line) // ループが予期せず終了した場合に残っている line を解放
-         free(line);
-    // GNL のエラーハンドリングが必要な場合は追加
-    close(fd);
-    find_z_min_max(fdf); // find_z_min_max を呼び出す（プロトタイプが必要）
+	allocate_grids(fdf);
+	processed_lines = process_map_lines(fdf, fd, line, 0);
+	close(fd);
+	if (processed_lines != fdf->map_height)
+	{
+		cleanup(fdf);
+		terminate("Error: Actual line count differs from initial count");
+	}
+	find_z_min_max(fdf);
+}
+
+/* @brief Reads map file, validates dimensions, and fills grids */
+void	parse_map(const char *filename, t_fdf *fdf)
+{
+	int		fd;
+	char	*line;
+
+	fdf->map_height = count_lines(filename);
+	if (fdf->map_height <= 0)
+		terminate("Error: Map file is empty or unreadable");
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		terminate("Error: Failed to open map file for parsing");
+	line = get_next_line(fd);
+	if (!line)
+		close_terminal(fd, "Error: Failed to read first line");
+	while (line && (line[0] == '\n' || line[0] == '\0'))
+	{
+		free(line);
+		line = get_next_line(fd);
+	}
+	if (!line)
+		close_terminal(fd, "Error: No valid data lines found in map");
+	fdf->map_width = get_map_width(line);
+	if (fdf->map_width <= 0)
+		free_close_terminal(fd, "Error: Invalid map width on first data line",
+			line);
+	parse_map1(fdf, fd, line);
 }

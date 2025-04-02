@@ -1,31 +1,44 @@
 #include "fdf.h"
+#include <stdlib.h>
 
-/* @brief Handles key press events */
+void	init_bresenham_params(t_bresenham *bres, t_point p0, t_point p1)
+{
+	bres->dx = abs((int)p1.x - (int)p0.x);
+	bres->dy = -abs((int)p1.y - (int)p0.y);
+	if (p0.x < p1.x)
+		bres->sx = 1;
+	else
+		bres->sx = -1;
+	if (p0.y < p1.y)
+		bres->sy = 1;
+	else
+		bres->sy = -1;
+	bres->err = bres->dx + bres->dy;
+	bres->cur_x = (int)p0.x;
+	bres->cur_y = (int)p0.y;
+}
+
 int	key_hook(int keycode, t_fdf *fdf)
 {
 	if (keycode == KEY_ESC)
 	{
-		// ★ cleanup を呼び出して終了するだけにする ★
+		ft_putendl_fd("ESC key pressed. Exiting.", STDOUT_FILENO);
 		cleanup(fdf);
 		exit(EXIT_SUCCESS);
 	}
-	// Add other key hooks here if needed
 	return (0);
 }
 
-/* @brief Handles the window close button event */
 int	close_hook(t_fdf *fdf)
 {
-	// ★ cleanup を呼び出して終了するだけにする ★
+	ft_putendl_fd("Window close button clicked. Exiting.", STDOUT_FILENO);
 	cleanup(fdf);
 	exit(EXIT_SUCCESS);
-	// return (0); // exit() の後なので不要
 }
 
-/* @brief Handles window exposure events (redraw if necessary) */
-/* Useful if window gets covered and then uncovered */
-int expose_hook(t_fdf *fdf)
+int	expose_hook(t_fdf *fdf)
 {
-    render(fdf); // Just re-render the current state
-    return (0);
+	render(fdf);
+	return (0);
 }
+
