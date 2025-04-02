@@ -1,6 +1,5 @@
 #include "fdf.h"
 
-/* @brief Handles program termination with an error message */
 void	terminate(char *error_message)
 {
 	if (error_message)
@@ -10,8 +9,7 @@ void	terminate(char *error_message)
 	exit(EXIT_FAILURE);
 }
 
-/* @brief Initializes default values in the FdF structure */
-void	init_fdf_struct(t_fdf *fdf) // Renamed from init_fdf to avoid confusion
+void	init_fdf_struct(t_fdf *fdf)
 {
 	fdf->mlx_ptr = NULL;
 	fdf->win_ptr = NULL;
@@ -29,14 +27,12 @@ void	init_fdf_struct(t_fdf *fdf) // Renamed from init_fdf to avoid confusion
 	fdf->angle = 0.5235f;
 }
 
-/* @brief Sets up MLX hooks */
 void	setup_hooks(t_fdf *fdf)
 {
 	mlx_hook(fdf->win_ptr, 2, 1L << 0, key_hook, fdf);
 	mlx_hook(fdf->win_ptr, 17, 1L << 17, close_hook, fdf);
 }
 
-/* @brief Main function */
 int	main(int argc, char **argv)
 {
 	t_fdf	fdf;
@@ -57,4 +53,3 @@ int	main(int argc, char **argv)
 	mlx_loop(fdf.mlx_ptr);
 	return (EXIT_SUCCESS);
 }
-// --- File Function Count: 5 ---

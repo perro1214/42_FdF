@@ -1,7 +1,6 @@
 #include "fdf.h"
 #include <math.h>
 
-/* @brief Applies isometric projection and transformation to a 3D point */
 t_point	project(t_point p, t_fdf *fdf)
 {
 	t_point	projected_p;

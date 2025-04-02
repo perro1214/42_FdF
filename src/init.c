@@ -1,6 +1,5 @@
 #include "fdf.h"
 
-/* @brief Initializes MiniLibX connection, window, and image buffer */
 void	init_mlx(t_fdf *fdf)
 {
 	fdf->mlx_ptr = mlx_init();
@@ -27,7 +26,6 @@ void	init_mlx(t_fdf *fdf)
 	}
 }
 
-/* @brief Calculate scale based on map size and window target */
 static float	calculate_initial_scale(t_fdf *fdf, float target_ratio)
 {
 	float	scale_x;
@@ -53,7 +51,6 @@ static float	calculate_initial_scale(t_fdf *fdf, float target_ratio)
 	return (scale);
 }
 
-/* @brief マップを中央に表示するための初期オフセットを計算する */
 static void	calculate_initial_offsets(t_fdf *fdf)
 {
 	float	proj_center_x;
@@ -69,7 +66,6 @@ static void	calculate_initial_offsets(t_fdf *fdf)
 	fdf->y_offset = (WIN_HEIGHT / 4) - (int)proj_top_y;
 }
 
-/* @brief Calculate initial scale and offsets to fit map */
 void	calculate_defaults(t_fdf *fdf)
 {
 	float	target_ratio;
@@ -87,7 +83,6 @@ void	calculate_defaults(t_fdf *fdf)
 	calculate_initial_offsets(fdf);
 }
 
-/* @brief Finds min and max Z values (useful for color gradients) */
 void	find_z_min_max(t_fdf *fdf)
 {
 	int	x;

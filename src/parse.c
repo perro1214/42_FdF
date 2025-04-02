@@ -56,7 +56,6 @@ static void	parse_map1(t_fdf *fdf, int fd, char *line)
 	find_z_min_max(fdf);
 }
 
-/* @brief Reads map file, validates dimensions, and fills grids */
 void	parse_map(const char *filename, t_fdf *fdf)
 {
 	int		fd;

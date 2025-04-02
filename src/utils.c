@@ -55,7 +55,6 @@ int	get_default_color(int z, t_fdf *fdf)
 	return ((red << 16) | (green << 8) | blue);
 }
 
-/* @brief Helper to free arrays created by ft_split */
 void	free_split(char **split_arr)
 {
 	int	i;
@@ -71,14 +70,11 @@ void	free_split(char **split_arr)
 	free(split_arr);
 }
 
-/* @brief Checks if a character is a valid hexadecimal digit */
-// Assuming ft_isdigit is available from libft.h (implicitly included via fdf.h)
 int	ft_ishexdigit(char c)
 {
 	return (ft_isdigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 }
 
-/* @brief Converts a hexadecimal string (like 0xFFFFFF or FFFFFF) to int */
 int	ft_atoi_hex(const char *str)
 {
 	int		result;
@@ -101,4 +97,3 @@ int	ft_atoi_hex(const char *str)
 	}
 	return (result);
 }
-// --- File Function Count: 5 ---

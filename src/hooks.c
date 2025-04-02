@@ -41,4 +41,3 @@ int	expose_hook(t_fdf *fdf)
 	render(fdf);
 	return (0);
 }
-

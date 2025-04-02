@@ -1,6 +1,5 @@
 #include "fdf.h"
 
-/* @brief Gets the width of the map from a line (count numbers) */
 int	get_map_width(char *line)
 {
 	int		width;
@@ -17,7 +16,6 @@ int	get_map_width(char *line)
 	return (width);
 }
 
-/* @brief Counts the number of lines (height) in the file */
 int	count_lines(const char *filename)
 {
 	int		fd;
@@ -40,7 +38,6 @@ int	count_lines(const char *filename)
 	return (height);
 }
 
-/* @brief Allocates memory for the z_grid and color_grid */
 void	allocate_grids(t_fdf *fdf)
 {
 	int	i;
@@ -69,13 +66,32 @@ void	allocate_grids(t_fdf *fdf)
 	}
 }
 
-/* @brief Fills a single row of the grid with z and color values */
-/* Returns 0 on success, 1 on width mismatch error */
+static void	fill_grids_from_split(char **values, int y, t_fdf *fdf)
+{
+	char	*color_str;
+	int		x;
+
+	x = 0;
+	while (x < fdf->map_width)
+	{
+		fdf->z_grid[y][x] = ft_atoi(values[x]);
+		color_str = ft_strchr(values[x], ',');
+		if (color_str)
+		{
+			fdf->color_grid[y][x] = ft_atoi_hex(color_str + 1);
+		}
+		else
+		{
+			fdf->color_grid[y][x] = -1;
+		}
+		x++;
+	}
+	free_split(values);
+}
+
 int	fill_grid_row(int y, char *line, t_fdf *fdf)
 {
 	char	**values;
-	char	*color_str;
-	int		x;
 	int		actual_width;
 
 	values = ft_split(line, ' ');
@@ -91,17 +107,6 @@ int	fill_grid_row(int y, char *line, t_fdf *fdf)
 		ft_putendl_fd("Error: Map line has inconsistent width", STDERR_FILENO);
 		return (1);
 	}
-	x = 0;
-	while (x < fdf->map_width)
-	{
-		fdf->z_grid[y][x] = ft_atoi(values[x]);
-		color_str = ft_strchr(values[x], ',');
-		if (color_str)
-			fdf->color_grid[y][x] = ft_atoi_hex(color_str + 1);
-		else
-			fdf->color_grid[y][x] = -1;
-		x++;
-	}
-	free_split(values);
+	fill_grids_from_split(values, y, fdf);
 	return (0);
 }
